@@ -1,0 +1,612 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="" />
+    <title></title>
+    <style>
+      :root {
+        --ink: #171512;
+        --muted: #62666d;
+        --line: #e3e0dc;
+        --paper: #ffffff;
+        --soft: #f7f5f1;
+        --shadow: 0 18px 50px rgba(15, 23, 42, 0.08);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        line-height: 1.55;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      .topbar {
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 28px;
+        padding: 0 clamp(24px, 5vw, 60px);
+        background: rgba(255, 255, 255, 0.94);
+        backdrop-filter: blur(14px);
+      }
+
+      .brand {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 25px;
+        font-weight: 800;
+        line-height: 1;
+      }
+
+      .nav {
+        display: flex;
+        align-items: center;
+        gap: clamp(22px, 4vw, 48px);
+        color: #16181c;
+        font-size: 15px;
+      }
+
+      .search {
+        width: 28px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .search svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      .hero {
+        min-height: clamp(260px, 32vw, 360px);
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        padding: 56px clamp(24px, 9.5vw, 120px);
+        background: var(--soft);
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+          linear-gradient(90deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.72) 42%, rgba(255, 255, 255, 0.12) 100%),
+          var(--hero-image);
+        background-position: center;
+        background-size: cover;
+      }
+
+      .heroContent {
+        position: relative;
+        width: min(720px, 100%);
+      }
+
+      .hero h1 {
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(50px, 8vw, 76px);
+        font-weight: 800;
+        line-height: 1.02;
+        letter-spacing: 0;
+      }
+
+      .hero p {
+        max-width: 560px;
+        margin: 22px 0 0;
+        color: #444951;
+        font-size: clamp(17px, 2vw, 20px);
+        line-height: 1.55;
+      }
+
+      .wrap {
+        width: min(1020px, calc(100% - 40px));
+        margin: clamp(34px, 5vw, 56px) auto 72px;
+      }
+
+      .storyList {
+        border: 1px solid rgba(226, 224, 220, 0.9);
+        border-radius: 10px;
+        padding: 0 30px;
+        background: var(--paper);
+        box-shadow: var(--shadow);
+      }
+
+      .storyItem {
+        display: block;
+        padding: 34px 10px 36px;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .storyItem:last-child {
+        border-bottom: 0;
+      }
+
+      .location {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        margin: 0 0 14px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .location svg {
+        width: 19px;
+        height: 19px;
+        flex: 0 0 auto;
+      }
+
+      .storyItem h2 {
+        max-width: 620px;
+        margin: 0;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: clamp(29px, 4vw, 39px);
+        font-weight: 800;
+        line-height: 1.13;
+        letter-spacing: 0;
+      }
+
+      .storyItem p {
+        max-width: 520px;
+        margin: 18px 0 0;
+        color: #454951;
+        font-size: 16px;
+        line-height: 1.6;
+      }
+
+      .storyItem:hover h2 {
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 5px;
+      }
+
+      .emptyState {
+        padding: 42px 10px;
+        color: var(--muted);
+        font-size: 16px;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-top: 24px;
+        color: var(--muted);
+        font-size: 15px;
+      }
+
+      .paginationStatus {
+        margin: 0;
+      }
+
+      .paginationActions {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .pageLink {
+        min-width: 96px;
+        min-height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 0 16px;
+        background: var(--paper);
+        color: var(--ink);
+        font-size: 14px;
+        font-weight: 700;
+      }
+
+      .pageLink[aria-disabled="true"] {
+        pointer-events: none;
+        opacity: 0.45;
+      }
+
+      @media (max-width: 760px) {
+        .topbar {
+          height: auto;
+          align-items: flex-start;
+          flex-direction: column;
+          padding: 22px 24px;
+        }
+
+        .nav {
+          width: 100%;
+          justify-content: space-between;
+          gap: 14px;
+          overflow-x: auto;
+          font-size: 14px;
+        }
+
+        .hero {
+          min-height: 300px;
+          padding: 46px 24px;
+        }
+
+        .hero::before {
+          background:
+            linear-gradient(90deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.72) 60%, rgba(255, 255, 255, 0.28) 100%),
+            var(--hero-image);
+          background-position: center;
+          background-size: cover;
+        }
+
+        .wrap {
+          width: min(100% - 28px, 1020px);
+          margin-bottom: 42px;
+        }
+
+        .storyList {
+          padding: 0 18px;
+        }
+
+        .storyItem {
+          padding: 28px 0 30px;
+        }
+
+        .pagination {
+          align-items: stretch;
+          flex-direction: column;
+        }
+
+        .paginationActions {
+          justify-content: space-between;
+        }
+      }
+    </style>
+  </head>
+  <body style="--hero-image: url('https://p1-q.mafengwo.net/s9/M00/A8/87/wKgBs1eSKJmAJrPTABckyB0Qyd851.jpeg?imageView2%2F2%2Fw%2F680%2Fq%2F90')">
+    <header class="topbar">
+      <h1 class="brand"></h1>
+    </header>
+
+    <section class="hero">
+      <div class="heroContent">
+        <h1>Los Angeles</h1>
+        <p></p>
+      </div>
+    </section>
+
+    <main class="wrap">
+      <section class="storyList" aria-label="">
+        
+        <a class="storyItem" href="emVGisch9_JXBIyu.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Live here, zero distance from Hollywood stars.</h2>
+          <p>You might even run into a celebrity!</p>
+        </a>
+        
+        <a class="storyItem" href="om3RFraduEVh7KYl.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>How many days can you spend in Los Angeles without running out of things to do? If you don&#39;t know, this guide has everything you need.</h2>
+          <p>Planning a trip to Los Angeles? Still lining up at Universal Studios Hollywood? Searching for celebrity handprints on the Walk of Fame? Crowded with tourists at Dolby Theatre in Hollywood Hills? Then you&#39;re behind the times. This guide shows you how to avoid tourist traps, discover unique routes, and explore the latest trendy experiences and new themed attractions recommended by the tourism board.</p>
+        </a>
+        
+        <a class="storyItem" href="NVW_5Bm2KO1N0YN5.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Route 66: An Abandoned American Highway That&#39;s Still So Popular!</h2>
+          <p>Starting Point: Chicago
+
+What is Route 66? As novelist John Steinbeck wrote in his novel &quot;The Grapes</p>
+        </a>
+        
+        <a class="storyItem" href="jUdxtw31rfm8GLLS.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>What are the best things to do in Los Angeles? A comprehensive guide to must-visit attractions.</h2>
+          <p>If traveling to the U.S. West Coast for tourism, Los Angeles—known as &quot;The City of Angels&quot;—is undoubtedly a top destination choice.</p>
+        </a>
+        
+        <a class="storyItem" href="3g4bvpNS5jxuI-z2.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Ultimate Guide to the World&#39;s Most Popular Photo Spots | Los Angeles - &quot;Angel Wings&quot; Descends on Angel City!</h2>
+          <p>&quot;I created this interactive street art to convey that all of humanity are Earth&#39;s angels.&quot;</p>
+        </a>
+        
+        <a class="storyItem" href="u_q8e6BI7_EcriW4.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Highlights! Must-see small towns and beautiful scenery along America&#39;s Highway 1!</h2>
+          <p>Highway No. 1 has been named by National Geographic as one of the top 50 destinations you should not miss in your lifetime. This highway is worth driving over 10 times. Its very existence teaches people a simple truth: sometimes the destination isn&#39;t that important; the scenery along the way will make you want to stay forever!</p>
+        </a>
+        
+        <a class="storyItem" href="JGmoCDvlUY1-1RXL.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles Rooftop Bar | Supermodel-Style Light Bites &amp; Cocktails, Pool Party with City Views</h2>
+          <p>If you don&#39;t already have a few beautiful and chill rooftop bars to show off, follow our guide today</p>
+        </a>
+        
+        <a class="storyItem" href="0LxqRxfhHe5X8ZtB.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles 6 Flea Markets | From Ancient Coins to Trendy Fashion, You Can&#39;t Miss Them!</h2>
+          <p>Wandering around Los Angeles definitely means hitting some flea markets to find exquisite and fun vi</p>
+        </a>
+        
+        <a class="storyItem" href="3loMwjyxIYnL-CAT.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>February 2019, Los Angeles Full of Chinese New Year Atmosphere</h2>
+          <p>Although you may be far from home, you must never take Spring Festival lightly! There are definitely</p>
+        </a>
+        
+        <a class="storyItem" href="pNCk9VipRd9QEQe2.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles Fun &amp; Play Guide #02: Enjoyable Shopping Destinations Worth Exploring</h2>
+          <p>Los Angeles is a place that attracts fashion-forward individuals worldwide and serves as the world&#39;s</p>
+        </a>
+        
+        <a class="storyItem" href="ruZGnmYlhqTMKJxR.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Rediscover Traditional Delicacies | Recommended Peking Duck Restaurants in Los Angeles</h2>
+          <p>With the weekend approaching, are your friends starting to call each other again to arrange meal gat</p>
+        </a>
+        
+        <a class="storyItem" href="uWl6Qd9dDQVN0z4k.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles Ticket Buying Guide | Discounts, Express Passes &amp; City Passes Explained!</h2>
+          <p>Los Angeles is a must-visit city in western America, the cultural and artistic capital, a gathering </p>
+        </a>
+        
+        <a class="storyItem" href="o1ls1h31CC6BsxUn.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>What are your go-to ways for experiencing Los Angeles in a day, and how many do you have?</h2>
+          <p>I. Preface
+
+Los Angeles is a place many people long for - at least for everyone who wishes to visit </p>
+        </a>
+        
+        <a class="storyItem" href="ShLSeiLyLJh08AIq.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>First Time in America? Here&#39;s Your Complete Guide to Exploring Across the Ocean!</h2>
+          <p>Where would you choose to go on your first trip to America - which cities, what sights, and which national parks to explore? If you love road trips and nature, then the American West is definitely not something you should miss.</p>
+        </a>
+        
+        <a class="storyItem" href="FkvtCtnZGb_ajUMN.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>WonderWorld Exhibition: Escaping Reality into a Dreamscape of Wonderland</h2>
+          <p>WonderWorld Exhibition
+WonderWorld Exhibition: Escaping Reality, Drifting Into Wonderland</p>
+        </a>
+        
+        <a class="storyItem" href="mQ4ZHZ161Ms_hxMG.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles Vibrant Fun Guide #1: Dreamy and Thrilling Theme Parks</h2>
+          <p>You can always believe in fairy tales, magic, and adventure. In Los Angeles, the birthplace of Holly</p>
+        </a>
+        
+        <a class="storyItem" href="8dgN3FhRwk2Xbi57.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Los Angeles&#39; incredibly delicious and budget-friendly eats that even Hollywood celebs love!</h2>
+          <p>Have you heard that eating out in America can be quite expensive? Just thinking about it hurts your wallet. But no matter how high the cost of living is in any city, there are always some affordable culinary gems hidden around every corner. After extensive searching, I&#39;ve finally discovered a cluster of popular and budget-friendly restaurants in Los Angeles where you can enjoy delicious food at great prices. They say there&#39;s even a chance to run into celebrities! Food lovers, come on in and take a look!</p>
+        </a>
+        
+        <a class="storyItem" href="8xW454jgwfzsHTUG.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Redemption Mountain | The place that never leaves my mind</h2>
+          <p>Do you have any place you&#39;ve been longing to visit for a very long time?
+For me,
+Salvation Mountain </p>
+        </a>
+        
+        <a class="storyItem" href="1Boq2ZwrPhj6LaVR.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>Embracing the Ocean | Living on California&#39;s Most Beautiful Beaches</h2>
+          <p>Stay at beaches loved by locals, and have fun like them!</p>
+        </a>
+        
+        <a class="storyItem" href="g-rYDs0j-w2l9mjq.html">
+          <p class="location">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path
+                fill="currentColor"
+                d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7Zm0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5Z"
+              />
+            </svg>
+            <span>Los Angeles</span>
+          </p>
+          <h2>This Los Angeles Universal Studios guide is guaranteed to be worth every penny of your ticket price!</h2>
+          <p>Here&#39;s my strong recommendation: If you&#39;re coming to Los Angeles, Universal Studios Hollywood is abs</p>
+        </a>
+        
+      </section>
+
+      
+      
+      
+      
+      
+      <nav class="pagination" aria-label="Stories pagination">
+        <p class="paginationStatus">
+          Page 1 of 8 · 141 stories
+        </p>
+        <div class="paginationActions">
+          <a
+            class="pageLink"
+            href="list?page=0"
+            aria-disabled="true"
+          >
+            Previous
+          </a>
+          <a
+            class="pageLink"
+            href="list-2.html"
+            aria-disabled="false"
+          >
+            Next
+          </a>
+        </div>
+      </nav>
+      
+    </main>
+  </body>
+</html>
